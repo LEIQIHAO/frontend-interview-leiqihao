@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>可拖拽积木块</title>
+    <style>
+        .container {
+            width: 500px;
+            height: 500px;
+            border: 2px solid #333;
+            position: relative;
+            margin: 20px auto;
+            overflow: hidden;
+            background: #f0f0f0;
+        }
+
+        .block {
+            width: 100px;
+            height: 100px;
+            background: #2196F3;
+            position: absolute;
+            cursor: move;
+            transition: opacity 0.2s;
+            border-radius: 4px;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+        }
+
+        /* 拖拽时样式 */
+        .block.dragging {
+            opacity: 0.5;
+            box-shadow: 4px 4px 8px rgba(0,0,0,0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="block" id="draggable"></div>
+    </div>
+
+    <script>
+        (function() {
+            const block = document.getElementById('draggable');
+            let isDragging = false;
+            let startX, startY, initialX, initialY;
+
+            block.addEventListener('mousedown', (e) => {
+                isDragging = true;
+                block.classList.add('dragging');
+                
+                // 记录初始位置
+                startX = e.clientX;
+                startY = e.clientY;
+                initialX = block.offsetLeft;
+                initialY = block.offsetTop;
+
+            });
+
+            document.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+
+                // 计算鼠标差值
+                const deltaX = e.clientX - startX;
+                const deltaY = e.clientY - startY;
+                
+                let newX = initialX + deltaX;
+                let newY = initialY + deltaY;
+
+                // 限制在父元素内部
+                newX = Math.max(0, Math.min(newX, 500 - 100)); 
+                newY = Math.max(0, Math.min(newY, 500 - 100)); 
+
+                block.style.left = `${newX}px`;
+                block.style.top = `${newY}px`;
+            });
+
+            document.addEventListener('mouseup', () => {
+                isDragging = false;
+                block.classList.remove('dragging');
+            });
+        })();
+    </script>
+</body>
+</html>
